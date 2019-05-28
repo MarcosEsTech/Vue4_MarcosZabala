@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Vue_4</title>
+</head>
+<body>
+
+	<div class="container">
+
+	    <h1>Chariot shopping</h1>
+
+		    <ul class="list-group">
+
+		        <chariot v-for="chariot in chariots" :chariot="chariot" :selected.sync="selected"></chariot>
+
+		    </ul>
+
+		    <pre>{{ $data | json }}</pre>
+
+	</div>
+
+	<template id="chariot-template">
+
+	    <li class="list-group-item">
+
+		        <h4>"{{ chariot.name }}" chariot has <strong>{{ chariot.horses }}</strong> horse(s)!</h4>
+
+		        <button @click="rideChariot(chariot)" class="btn btn-primary" :disabled="isSelectedChariot">
+		            {{ action }}
+		        </button>
+
+	    </li>
+
+	</template>
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.js"></script>
+
+<script>
+	Vue.component('chariot', {
+        props: ['chariot', 'selected'],
+        template: "#chariot-template",
+        methods: {
+            rideChariot: function (chariot) {
+                this.selected = chariot;
+            },
+        },
+        computed: {
+            hasMoreHorses: function () {
+                return this.selected.horses < this.chariot.horses
+            },
+            isSelectedChariot: function () {
+                return this.selected.name == this.chariot.name
+            },
+            noChariot: function () {
+                return this.selected.name == null;
+            },
+            action: function () {
+                if (this.noChariot) {
+                    action = 'Pick Chariot'
+                } else if (this.isSelectedChariot) {
+                    action = 'Riding!'
+                } else if (this.hasMoreHorses) {
+                    action = 'Hire Horses'
+                } else {
+                    action = 'Dismiss Horses'
+                }
+                return action;
+            }
+        }
+    });
+    var vm = new Vue({
+        el: 'body',
+        data: {
+            chariots: [
+                {name: "Olympus", horses: 4},
+                {name: "Sagitta", horses: 3},
+                {name: "Icarus", horses: 2},
+                {name: "Abraxas", horses: 1},
+            ],
+            selected: {}
+        },
+    })
+
+
+</script>
+</html>
